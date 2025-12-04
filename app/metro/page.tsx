@@ -1,4 +1,5 @@
 "use client";
+import { ASCIIEffect, MatrixEffect } from "@/shaders";
 import { useGLTF, PointerLockControls } from "@react-three/drei";
 import { Canvas, ThreeElements, useThree, useFrame } from "@react-three/fiber";
 import { forwardRef, useEffect, useRef, useState } from "react";
@@ -138,12 +139,16 @@ export default function MetroPage() {
     };
 
     return (
-        <Canvas camera={{ fov: 75, near: 0.1, far: 1000 }}>
+        <Canvas
+            camera={{ fov: 75, near: 0.1, far: 1000 }}
+            gl={{ antialias: true }}
+        >
             <ambientLight intensity={0.5} />
             <directionalLight position={[10, 10, 5]} intensity={1} />
             <pointLight position={[8, 4, 5]} intensity={0.5} />
             <FirstPersonCamera colliders={colliders} />
             <Model ref={modelRefCallback} />
+            <ASCIIEffect />
         </Canvas>
     );
 }
