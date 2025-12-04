@@ -1,12 +1,17 @@
 "use client";
 import { ASCIIEffect, MatrixEffect } from "@/shaders";
+import { AnimatedShroomPostFX } from "@/shaders/Shroom";
 import { useGLTF, PointerLockControls } from "@react-three/drei";
 import { Canvas, ThreeElements, useThree, useFrame } from "@react-three/fiber";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, MutableRefObject } from "react";
 import { Group, Vector3, Raycaster, Mesh } from "three";
 
 // First-person camera with collision detection
-function FirstPersonCamera({ colliders }: { colliders: Mesh[] }) {
+function FirstPersonCamera({
+    collidersRef,
+}: {
+    collidersRef: MutableRefObject<Mesh[]>;
+}) {
     const { camera } = useThree();
     const direction = useRef(new Vector3());
     const raycaster = useRef(new Raycaster());
@@ -98,7 +103,7 @@ function FirstPersonCamera({ colliders }: { colliders: Mesh[] }) {
         direction.current.y = 0;
 
         // Check collision before moving
-        if (direction.current.length() > 0 && colliders.length > 0) {
+        if (direction.current.length() > 0 && collidersRef.current.length > 0) {
             const newPosition = camera.position.clone().add(direction.current);
 
             // Cast rays in movement direction
@@ -107,7 +112,7 @@ function FirstPersonCamera({ colliders }: { colliders: Mesh[] }) {
                 direction.current.clone().normalize()
             );
             const intersects = raycaster.current.intersectObjects(
-                colliders,
+                collidersRef.current,
                 true
             );
 
@@ -124,7 +129,7 @@ function FirstPersonCamera({ colliders }: { colliders: Mesh[] }) {
 }
 
 export default function MetroPage() {
-    const [colliders, setColliders] = useState<Mesh[]>([]);
+    const collidersRef = useRef<Mesh[]>([]);
 
     const modelRefCallback = (group: Group | null) => {
         if (group) {
@@ -134,21 +139,18 @@ export default function MetroPage() {
                     meshes.push(child as Mesh);
                 }
             });
-            setColliders(meshes);
+            collidersRef.current = meshes;
         }
     };
 
     return (
-        <Canvas
-            camera={{ fov: 75, near: 0.1, far: 1000 }}
-            gl={{ antialias: true }}
-        >
+        <Canvas camera={{ fov: 75, near: 0.1, far: 1000 }}>
             <ambientLight intensity={0.5} />
             <directionalLight position={[10, 10, 5]} intensity={1} />
             <pointLight position={[8, 4, 5]} intensity={0.5} />
-            <FirstPersonCamera colliders={colliders} />
+            <FirstPersonCamera collidersRef={collidersRef} />
             <Model ref={modelRefCallback} />
-            <ASCIIEffect />
+            <AnimatedShroomPostFX />
         </Canvas>
     );
 }
