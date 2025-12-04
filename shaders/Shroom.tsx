@@ -1,5 +1,5 @@
+"use client";
 import {
-    EffectComposer,
     Bloom,
     ChromaticAberration,
     Noise,
@@ -37,7 +37,7 @@ export function AnimatedShroomPostFX() {
     });
 
     return (
-        <EffectComposer enableNormalPass={false} multisampling={0}>
+        <>
             {/* Psychedelic base inversion */}
             <Sepia intensity={1} blendFunction={BlendFunction.DIFFERENCE} />
 
@@ -64,6 +64,6 @@ export function AnimatedShroomPostFX() {
 
             {/* Organic texture */}
             <Noise opacity={0.05} />
-        </EffectComposer>
+        </>
     );
 }

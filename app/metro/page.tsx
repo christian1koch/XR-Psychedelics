@@ -1,9 +1,21 @@
 "use client";
 import { MetroModel } from "@/app/metro/MetroModel";
+import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ASCIIEffect } from "@/shaders";
+import { MatrixEffect } from "@/shaders/MatrixEffect";
 import { AnimatedShroomPostFX } from "@/shaders/Shroom";
 import { PointerLockControls } from "@react-three/drei";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
-import { useEffect, useRef, RefObject } from "react";
+import { ASCII, EffectComposer } from "@react-three/postprocessing";
+import { useEffect, useRef, RefObject, useState } from "react";
 import { Group, Vector3, Raycaster, Mesh } from "three";
 
 // First-person camera with collision detection
@@ -125,10 +137,15 @@ function FirstPersonCamera({
         }
     });
 
-    return <PointerLockControls />;
+    return <PointerLockControls selector=".canvas" />;
 }
-
+enum Trip {
+    NONE = "None",
+    ASCII = "ASCII",
+    Shroom = "Shroom",
+}
 export default function MetroPage() {
+    const [selectedTrip, setSelectedTrip] = useState<Trip>(Trip.ASCII);
     const collidersRef = useRef<Mesh[]>([]);
 
     const modelRefCallback = (group: Group | null) => {
@@ -144,13 +161,43 @@ export default function MetroPage() {
     };
 
     return (
-        <Canvas camera={{ fov: 75, near: 0.1, far: 1000 }}>
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
-            <pointLight position={[8, 4, 5]} intensity={0.5} />
-            <FirstPersonCamera collidersRef={collidersRef} />
-            <MetroModel ref={modelRefCallback} />
-            <AnimatedShroomPostFX />
-        </Canvas>
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline">Change Trip 💊</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <>
+                        {Object.values(Trip).map((trip) => (
+                            <DropdownMenuCheckboxItem
+                                key={trip}
+                                checked={trip === selectedTrip}
+                                onCheckedChange={() => setSelectedTrip(trip)}
+                            >
+                                {trip}
+                            </DropdownMenuCheckboxItem>
+                        ))}
+                    </>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            <Canvas
+                className="canvas"
+                camera={{ fov: 75, near: 0.1, far: 1000 }}
+            >
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[10, 10, 5]} intensity={1} />
+                <pointLight position={[8, 4, 5]} intensity={0.5} />
+                <FirstPersonCamera collidersRef={collidersRef} />
+                <MetroModel ref={modelRefCallback} />
+                {selectedTrip === Trip.Shroom && (
+                    <EffectComposer enableNormalPass={false} multisampling={0}>
+                        <AnimatedShroomPostFX />
+                    </EffectComposer>
+                )}
+                {selectedTrip === Trip.ASCII && <ASCIIEffect />}
+            </Canvas>
+        </>
     );
 }
