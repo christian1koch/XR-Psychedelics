@@ -145,7 +145,7 @@ enum Trip {
     Shroom = "Shroom",
 }
 export default function MetroPage() {
-    const [selectedTrip, setSelectedTrip] = useState<Trip>(Trip.ASCII);
+    const [selectedTrip, setSelectedTrip] = useState<Trip>(Trip.NONE);
     const collidersRef = useRef<Mesh[]>([]);
 
     const modelRefCallback = (group: Group | null) => {
@@ -162,26 +162,35 @@ export default function MetroPage() {
 
     return (
         <>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline">Change Trip 💊</Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <>
-                        {Object.values(Trip).map((trip) => (
-                            <DropdownMenuCheckboxItem
-                                key={trip}
-                                checked={trip === selectedTrip}
-                                onCheckedChange={() => setSelectedTrip(trip)}
-                            >
-                                {trip}
-                            </DropdownMenuCheckboxItem>
-                        ))}
-                    </>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="absolute">
+                <div className="absolute top-4 left-4 z-10">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">Change Trip 💊</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <>
+                                {Object.values(Trip).map((trip) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={trip}
+                                        checked={trip === selectedTrip}
+                                        onCheckedChange={() =>
+                                            setSelectedTrip(trip)
+                                        }
+                                    >
+                                        {trip}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                            </>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <div className="bg-background mt-2 w-full justify-center rounded-md p-1 text-center">
+                        Click anywhere and move around
+                    </div>
+                </div>
+            </div>
             <Canvas
                 className="canvas"
                 camera={{ fov: 75, near: 0.1, far: 1000 }}
