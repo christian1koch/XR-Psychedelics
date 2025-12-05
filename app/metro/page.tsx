@@ -9,7 +9,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ASCIIEffect } from "@/shaders";
+import { AfterImageEffect, ASCIIEffect } from "@/shaders";
+import { CustomPixelateEffect } from "@/shaders/CustomPixelEffect";
 import { MatrixEffect } from "@/shaders/MatrixEffect";
 import { AnimatedShroomPostFX } from "@/shaders/Shroom";
 import { PointerLockControls } from "@react-three/drei";
@@ -143,6 +144,8 @@ enum Trip {
     NONE = "None",
     ASCII = "ASCII",
     Shroom = "Shroom",
+    AfterImage = "AfterImage (dizzy 🤮)",
+    CustomPixelate = "CustomPixelate",
 }
 export default function MetroPage() {
     const [selectedTrip, setSelectedTrip] = useState<Trip>(Trip.NONE);
@@ -206,6 +209,16 @@ export default function MetroPage() {
                     </EffectComposer>
                 )}
                 {selectedTrip === Trip.ASCII && <ASCIIEffect />}
+                {selectedTrip === Trip.AfterImage && (
+                    <EffectComposer>
+                        <AfterImageEffect damp={0.8} />
+                    </EffectComposer>
+                )}
+                {selectedTrip === Trip.CustomPixelate && (
+                    <EffectComposer>
+                        <CustomPixelateEffect />
+                    </EffectComposer>
+                )}
             </Canvas>
         </>
     );

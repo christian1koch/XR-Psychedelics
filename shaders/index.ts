@@ -3,7 +3,7 @@
 
 export { MatrixEffect } from "./MatrixEffect";
 export { ASCIIEffect } from "./ASCIIEffect";
-
+export { AfterImageEffect } from "./AfterimageEffect";
 // Add more shader exports here as you create them:
 // export { BloomEffect } from "./BloomEffect";
 // export { GlitchEffect } from "./GlitchEffect";
