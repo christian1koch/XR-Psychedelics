@@ -210,7 +210,12 @@ export default function MetroPage() {
                 <MetroModel ref={modelRefCallback} />
                 {selectedTrip === Trip.Shroom && (
                     <EffectComposer enableNormalPass={false} multisampling={0}>
-                        <PsychedelicEffectFX />
+                        <PsychedelicEffectFX
+                            waveSpeed={2}
+                            noiseDistortionStrength={0.5}
+                            noiseDistortionScale={1}
+                            noiseDistortionSpeed={0.1}
+                        />
                     </EffectComposer>
                 )}
                 {selectedTrip === Trip.ASCII && <ASCIIEffect />}

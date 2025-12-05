@@ -136,6 +136,7 @@ export interface PsychedelicEffectFXProps {
     enableBloom?: boolean;
     enableVignette?: boolean;
     enableNoise?: boolean;
+    noiseDistortionSpeed?: number;
 }
 
 /**
@@ -196,6 +197,7 @@ export function PsychedelicEffectFX({
     enableBloom = true,
     enableVignette = true,
     enableNoise = false,
+    noiseDistortionSpeed = 0.3,
 }: PsychedelicEffectFXProps) {
     const chromaticOffsetVector = useMemo(
         () => new Vector2(chromaticOffset, chromaticOffset),
@@ -230,6 +232,7 @@ export function PsychedelicEffectFX({
                 key="noiseDistort"
                 strength={noiseDistortionStrength}
                 scale={noiseDistortionScale}
+                speed={noiseDistortionSpeed}
             />
         );
     }

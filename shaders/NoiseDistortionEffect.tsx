@@ -12,6 +12,7 @@ const noiseDistortionShader = /* glsl */ `
 uniform float uTime;
 uniform float uStrength;
 uniform float uScale;
+uniform float uSpeed;
 
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -52,7 +53,7 @@ float fbm(vec2 p) {
 }
 
 void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
-    float time = uTime * 0.3;
+    float time = uTime * uSpeed;
     float noiseX = fbm(uv * uScale + time);
     float noiseY = fbm(uv * uScale + time + 100.0);
     
@@ -62,13 +63,14 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 `;
 
 class NoiseDistortionEffectImpl extends Effect {
-    constructor(strength = 1.0, scale = 3.0) {
+    constructor(strength = 1.0, scale = 3.0, speed = 0.3) {
         super("NoiseDistortionEffect", noiseDistortionShader, {
             blendFunction: BlendFunction.NORMAL,
             uniforms: new Map<string, Uniform>([
                 ["uTime", new Uniform(0)],
                 ["uStrength", new Uniform(strength)],
                 ["uScale", new Uniform(scale)],
+                ["uSpeed", new Uniform(speed)],
             ]),
         });
     }
@@ -84,6 +86,9 @@ class NoiseDistortionEffectImpl extends Effect {
     set scale(v: number) {
         this.uniforms.get("uScale")!.value = v;
     }
+    set speed(v: number) {
+        this.uniforms.get("uSpeed")!.value = v;
+    }
 }
 
 export interface NoiseDistortionEffectProps {
@@ -91,14 +96,19 @@ export interface NoiseDistortionEffectProps {
     strength?: number;
     /** Noise scale (1-10) @default 3.0 */
     scale?: number;
+    /** Animation speed (0-2) @default 0.3 */
+    speed?: number;
 }
 
 export const NoiseDistortionEffect = forwardRef<
     NoiseDistortionEffectImpl,
     NoiseDistortionEffectProps
->(function NoiseDistortionEffect({ strength = 1.0, scale = 3.0 }, ref) {
+>(function NoiseDistortionEffect(
+    { strength = 1.0, scale = 3.0, speed = 0.3 },
+    ref
+) {
     const effect = useMemo(
-        () => new NoiseDistortionEffectImpl(strength, scale),
+        () => new NoiseDistortionEffectImpl(strength, scale, speed),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
@@ -108,6 +118,9 @@ export const NoiseDistortionEffect = forwardRef<
     useEffect(() => {
         effect.scale = scale;
     }, [effect, scale]);
+    useEffect(() => {
+        effect.speed = speed;
+    }, [effect, speed]);
     return <primitive ref={ref} object={effect} dispose={null} />;
 });
 
