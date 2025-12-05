@@ -209,13 +209,13 @@ export default function MetroPage() {
                 <FirstPersonCamera collidersRef={collidersRef} />
                 <MetroModel ref={modelRefCallback} />
                 {selectedTrip === Trip.Shroom && (
-                    <EffectComposer enableNormalPass={false} multisampling={0}>
+                    <EffectComposer enableNormalPass={false} multisampling={2}>
                         <PsychedelicEffectFX
                             waveSpeed={2}
                             noiseDistortionStrength={0.5}
-                            noiseDistortionScale={2}
-                            noiseDistortionSpeed={0.1}
-                            chromaticOffset={0.002}
+                            noiseDistortionScale={4}
+                            noiseDistortionSpeed={0.2}
+                            chromaticOffset={0.004}
                         />
                     </EffectComposer>
                 )}

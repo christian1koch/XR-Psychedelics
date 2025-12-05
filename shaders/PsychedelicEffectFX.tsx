@@ -204,103 +204,68 @@ export function PsychedelicEffectFX({
         [chromaticOffset]
     );
 
-    // Build effects array based on enabled flags
-    // Order matters! This matches the old PsychedelicEffect processing order
-    const effects: React.ReactElement[] = [];
+    // Render effects as normal JSX inside a fragment (keeps natural order)
+    return (
+        <>
+            {enableNoiseDistortion && (
+                <NoiseDistortionEffect
+                    key="noiseDistort"
+                    strength={noiseDistortionStrength}
+                    scale={noiseDistortionScale}
+                    speed={noiseDistortionSpeed}
+                />
+            )}
 
-    // 1. Trail effect (AfterImage)
-    if (enableTrail) {
-        effects.push(<AfterImageEffect key="trail" damp={trailDamp} />);
-    }
+            {enableChromatic && (
+                <ChromaticAberration
+                    key="chromatic"
+                    offset={chromaticOffsetVector}
+                    modulationOffset={0.5}
+                />
+            )}
 
-    // 2. Wave distortion (sine waves)
-    if (enableWave) {
-        effects.push(
-            <WaveDistortion
-                key="wave"
-                amplitude={waveAmplitude}
-                frequency={waveFrequency}
-                speed={waveSpeed}
-            />
-        );
-    }
+            {enablePalette && (
+                <PsychedelicPaletteEffect
+                    key="palette"
+                    intensity={paletteIntensity}
+                    saturationBoost={paletteSaturation}
+                />
+            )}
 
-    // 3. Noise distortion (FBM organic flow) - CUSTOM
-    if (enableNoiseDistortion) {
-        effects.push(
-            <NoiseDistortionEffect
-                key="noiseDistort"
-                strength={noiseDistortionStrength}
-                scale={noiseDistortionScale}
-                speed={noiseDistortionSpeed}
-            />
-        );
-    }
+            {enableElectric && (
+                <ElectricPatternEffect
+                    key="electric"
+                    intensity={electricIntensity}
+                    scale={electricScale}
+                />
+            )}
 
-    // 4. Chromatic aberration (built-in)
-    if (enableChromatic) {
-        effects.push(
-            <ChromaticAberration
-                key="chromatic"
-                offset={chromaticOffsetVector}
-                modulationOffset={0.5}
-            />
-        );
-    }
+            {enableBloom && (
+                <Bloom
+                    key="bloom"
+                    intensity={bloomIntensity}
+                    luminanceThreshold={bloomThreshold}
+                    luminanceSmoothing={0.9}
+                />
+            )}
 
-    // 5. Psychedelic palette mapping - CUSTOM
-    if (enablePalette) {
-        effects.push(
-            <PsychedelicPaletteEffect
-                key="palette"
-                intensity={paletteIntensity}
-                saturationBoost={paletteSaturation}
-            />
-        );
-    }
+            {enableVignette && (
+                <Vignette
+                    key="vignette"
+                    darkness={vignetteDarkness}
+                    offset={0.3}
+                />
+            )}
 
-    // 6. Electric/neural patterns - CUSTOM
-    if (enableElectric) {
-        effects.push(
-            <ElectricPatternEffect
-                key="electric"
-                intensity={electricIntensity}
-                scale={electricScale}
-            />
-        );
-    }
-
-    // 7. Bloom/glow (built-in)
-    if (enableBloom) {
-        effects.push(
-            <Bloom
-                key="bloom"
-                intensity={bloomIntensity}
-                luminanceThreshold={bloomThreshold}
-                luminanceSmoothing={0.9}
-            />
-        );
-    }
-
-    // 8. Vignette (built-in)
-    if (enableVignette) {
-        effects.push(
-            <Vignette key="vignette" darkness={vignetteDarkness} offset={0.3} />
-        );
-    }
-
-    // 9. Film grain noise (built-in)
-    if (enableNoise) {
-        effects.push(
-            <Noise
-                key="noise"
-                opacity={noiseOpacity}
-                blendFunction={BlendFunction.OVERLAY}
-            />
-        );
-    }
-
-    return effects;
+            {enableNoise && (
+                <Noise
+                    key="noise"
+                    opacity={noiseOpacity}
+                    blendFunction={BlendFunction.OVERLAY}
+                />
+            )}
+        </>
+    );
 }
 
 // Export individual components for granular use
