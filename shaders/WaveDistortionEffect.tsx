@@ -100,7 +100,7 @@ export const WaveDistortionEffect = forwardRef<
     WaveDistortionEffectImpl,
     WaveDistortionEffectProps
 >(function WaveDistortionEffect(
-    { amplitude = 0.02, frequency = 10.0, speed = 1.0 },
+    { amplitude = 0.02, frequency = 10.0, speed = 0.5 },
     ref
 ) {
     const effect = useMemo(

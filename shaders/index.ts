@@ -7,6 +7,10 @@ export { AfterImageEffect } from "./AfterimageEffect";
 export { PsychedelicEffect } from "./PsychedelicEffect";
 export { WaveDistortionEffect } from "./WaveDistortionEffect";
 export { ColorShiftEffect } from "./ColorShiftEffect";
+export { NoiseDistortionEffect } from "./NoiseDistortionEffect";
+export { PsychedelicPaletteEffect } from "./PsychedelicPaletteEffect";
+export { ElectricPatternEffect } from "./ElectricPatternEffect";
+export { PsychedelicEffectFX, WaveDistortion } from "./PsychedelicEffectFX";
 // Add more shader exports here as you create them:
 // export { BloomEffect } from "./BloomEffect";
 // export { GlitchEffect } from "./GlitchEffect";

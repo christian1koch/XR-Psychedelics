@@ -9,7 +9,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AfterImageEffect, ASCIIEffect, PsychedelicEffect } from "@/shaders";
+import {
+    AfterImageEffect,
+    ASCIIEffect,
+    PsychedelicEffect,
+    PsychedelicEffectFX,
+} from "@/shaders";
 import { CustomPixelateEffect } from "@/shaders/CustomPixelEffect";
 import { MatrixEffect } from "@/shaders/MatrixEffect";
 import { AnimatedShroomPostFX } from "@/shaders/Shroom";
@@ -205,7 +210,7 @@ export default function MetroPage() {
                 <MetroModel ref={modelRefCallback} />
                 {selectedTrip === Trip.Shroom && (
                     <EffectComposer enableNormalPass={false} multisampling={0}>
-                        <PsychedelicEffect />
+                        <PsychedelicEffectFX />
                     </EffectComposer>
                 )}
                 {selectedTrip === Trip.ASCII && <ASCIIEffect />}
