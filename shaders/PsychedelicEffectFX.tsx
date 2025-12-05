@@ -243,7 +243,6 @@ export function PsychedelicEffectFX({
             <ChromaticAberration
                 key="chromatic"
                 offset={chromaticOffsetVector}
-                radialModulation={true}
                 modulationOffset={0.5}
             />
         );

@@ -213,8 +213,9 @@ export default function MetroPage() {
                         <PsychedelicEffectFX
                             waveSpeed={2}
                             noiseDistortionStrength={0.5}
-                            noiseDistortionScale={1}
+                            noiseDistortionScale={2}
                             noiseDistortionSpeed={0.1}
+                            chromaticOffset={0.002}
                         />
                     </EffectComposer>
                 )}
