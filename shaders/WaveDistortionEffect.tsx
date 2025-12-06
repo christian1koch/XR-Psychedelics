@@ -90,19 +90,20 @@ export interface WaveDistortionEffectProps {
     frequency?: number;
     /** Animation speed (0-3) @default 1.0 */
     speed?: number;
+
+    ref?: React.Ref<WaveDistortionEffectImpl>;
 }
 
 /**
  * Wave Distortion Effect - creates wavy UV distortions
  * Combine with ChromaticAberration, HueSaturation, Bloom, etc. for psychedelic effects
  */
-export const WaveDistortionEffect = forwardRef<
-    WaveDistortionEffectImpl,
-    WaveDistortionEffectProps
->(function WaveDistortionEffect(
-    { amplitude = 0.02, frequency = 10.0, speed = 0.5 },
-    ref
-) {
+export function WaveDistortionEffect({
+    amplitude = 0.02,
+    frequency = 10.0,
+    speed = 0.5,
+    ref,
+}: WaveDistortionEffectProps) {
     const effect = useMemo(
         () => new WaveDistortionEffectImpl({ amplitude, frequency, speed }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,6 +123,6 @@ export const WaveDistortionEffect = forwardRef<
     }, [effect, speed]);
 
     return <primitive ref={ref} object={effect} dispose={null} />;
-});
+}
 
 export { WaveDistortionEffectImpl };

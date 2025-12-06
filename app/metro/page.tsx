@@ -12,15 +12,28 @@ import {
 import {
     AfterImageEffect,
     ASCIIEffect,
+    ElectricPatternEffect,
     PsychedelicEffect,
     PsychedelicEffectFX,
+    WaveDistortion,
+    WaveDistortionEffect,
 } from "@/shaders";
 import { CustomPixelateEffect } from "@/shaders/CustomPixelEffect";
 import { MatrixEffect } from "@/shaders/MatrixEffect";
+import PurpleVoidEffect from "@/shaders/PurpleVoidEffect";
 import { AnimatedShroomPostFX } from "@/shaders/Shroom";
-import { PointerLockControls } from "@react-three/drei";
+import { PointerLockControls, Stars } from "@react-three/drei";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
-import { ASCII, EffectComposer } from "@react-three/postprocessing";
+import {
+    ASCII,
+    Bloom,
+    BrightnessContrast,
+    EffectComposer,
+    HueSaturation,
+    Noise,
+    Vignette,
+} from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
 import { useEffect, useRef, RefObject, useState } from "react";
 import { Group, Vector3, Raycaster, Mesh } from "three";
 
@@ -151,6 +164,8 @@ enum Trip {
     Shroom = "Shroom",
     AfterImage = "AfterImage (dizzy 🤮)",
     CustomPixelate = "CustomPixelate",
+    Test = "Test",
+    PurpleVoid = "PurpleVoid",
 }
 export default function MetroPage() {
     const [selectedTrip, setSelectedTrip] = useState<Trip>(Trip.NONE);
@@ -228,6 +243,38 @@ export default function MetroPage() {
                 {selectedTrip === Trip.CustomPixelate && (
                     <EffectComposer>
                         <CustomPixelateEffect />
+                    </EffectComposer>
+                )}
+                {selectedTrip === Trip.Test && (
+                    <>
+                        <EffectComposer>
+                            {/* <Vignette key="vignette" darkness={0.5} offset={0.3} /> */}
+                            {/* <AnimatedShroomPostFX /> */}
+                            <WaveDistortionEffect amplitude={0.01} />
+                            <BrightnessContrast
+                                brightness={50}
+                                contrast={100}
+                            />
+                            <AfterImageEffect damp={0.7} />
+                            <ElectricPatternEffect
+                                intensity={0.5}
+                                scale={0.5}
+                                speed={0.02}
+                                colorA={[141 / 255, 232 / 255, 189 / 255]}
+                                // purple
+                                colorB={[141 / 255, 89 / 255, 232 / 255]}
+                            />
+                            <HueSaturation
+                                blendFunction={BlendFunction.COLOR_BURN} // blend mode
+                                hue={Math.PI / 2} // hue in radians
+                                saturation={0.999} // saturation in radians
+                            />
+                        </EffectComposer>
+                    </>
+                )}
+                {selectedTrip === Trip.PurpleVoid && (
+                    <EffectComposer>
+                        <PurpleVoidEffect />
                     </EffectComposer>
                 )}
             </Canvas>
