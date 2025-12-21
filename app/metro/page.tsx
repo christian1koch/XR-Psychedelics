@@ -15,6 +15,7 @@ import {
     ElectricPatternEffect,
     PsychedelicEffect,
     PsychedelicEffectFX,
+    PsychEffect,
     WaveDistortion,
     WaveDistortionEffect,
 } from "@/shaders";
@@ -166,6 +167,7 @@ enum Trip {
     CustomPixelate = "CustomPixelate",
     Test = "Test",
     PurpleVoid = "PurpleVoid",
+    Psych = "Psych",
 }
 export default function MetroPage() {
     const [selectedTrip, setSelectedTrip] = useState<Trip>(Trip.NONE);
@@ -275,6 +277,11 @@ export default function MetroPage() {
                 {selectedTrip === Trip.PurpleVoid && (
                     <EffectComposer>
                         <PurpleVoidEffect />
+                    </EffectComposer>
+                )}
+                {selectedTrip === Trip.Psych && (
+                    <EffectComposer>
+                        <PsychEffect />
                     </EffectComposer>
                 )}
             </Canvas>

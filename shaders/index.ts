@@ -11,6 +11,7 @@ export { NoiseDistortionEffect } from "./NoiseDistortionEffect";
 export { PsychedelicPaletteEffect } from "./PsychedelicPaletteEffect";
 export { ElectricPatternEffect } from "./ElectricPatternEffect";
 export { PsychedelicEffectFX, WaveDistortion } from "./PsychedelicEffectFX";
+export { PsychEffect } from "./PsychEffect";
 // Add more shader exports here as you create them:
 // export { BloomEffect } from "./BloomEffect";
 // export { GlitchEffect } from "./GlitchEffect";
