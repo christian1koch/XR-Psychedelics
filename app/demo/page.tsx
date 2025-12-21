@@ -1,6 +1,6 @@
 "use client";
-import { MetroModel } from "@/app/metro/MetroModel";
-import { ForestModel } from "@/app/metro/ForestModel";
+import { MetroModel } from "@/app/demo/MetroModel";
+import { ForestModel } from "@/app/demo/ForestModel";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
