@@ -1,5 +1,6 @@
 "use client";
 import { MetroModel } from "@/app/metro/MetroModel";
+import { ForestModel } from "@/app/metro/ForestModel";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -13,26 +14,18 @@ import {
     AfterImageEffect,
     ASCIIEffect,
     ElectricPatternEffect,
-    PsychedelicEffect,
     PsychedelicEffectFX,
     PsychEffect,
-    WaveDistortion,
     WaveDistortionEffect,
 } from "@/shaders";
 import { CustomPixelateEffect } from "@/shaders/CustomPixelEffect";
-import { MatrixEffect } from "@/shaders/MatrixEffect";
 import PurpleVoidEffect from "@/shaders/PurpleVoidEffect";
-import { AnimatedShroomPostFX } from "@/shaders/Shroom";
-import { PointerLockControls, Stars } from "@react-three/drei";
+import { PointerLockControls } from "@react-three/drei";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import {
-    ASCII,
-    Bloom,
     BrightnessContrast,
     EffectComposer,
     HueSaturation,
-    Noise,
-    Vignette,
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import { useEffect, useRef, RefObject, useState } from "react";
@@ -159,6 +152,12 @@ function FirstPersonCamera({
 
     return <PointerLockControls selector=".canvas" />;
 }
+
+enum Scene {
+    Metro = "Metro",
+    Forest = "Forest",
+}
+
 enum Trip {
     NONE = "None",
     ASCII = "ASCII",
@@ -171,6 +170,7 @@ enum Trip {
 }
 export default function MetroPage() {
     const [selectedTrip, setSelectedTrip] = useState<Trip>(Trip.NONE);
+    const [selectedScene, setSelectedScene] = useState<Scene>(Scene.Metro);
     const collidersRef = useRef<Mesh[]>([]);
 
     const modelRefCallback = (group: Group | null) => {
@@ -188,7 +188,7 @@ export default function MetroPage() {
     return (
         <>
             <div className="absolute">
-                <div className="absolute top-4 left-4 z-10">
+                <div className="absolute top-4 left-4 z-10 flex flex-col">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline">Change Trip 💊</Button>
@@ -211,6 +211,31 @@ export default function MetroPage() {
                             </>
                         </DropdownMenuContent>
                     </DropdownMenu>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="mt-2">
+                                Change Scene 🌲
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuLabel>Scene</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <>
+                                {Object.values(Scene).map((scene) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={scene}
+                                        checked={scene === selectedScene}
+                                        onCheckedChange={() =>
+                                            setSelectedScene(scene)
+                                        }
+                                    >
+                                        {scene}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                            </>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                     <div className="bg-background mt-2 w-full justify-center rounded-md p-1 text-center">
                         Click anywhere and move around
                     </div>
@@ -224,7 +249,12 @@ export default function MetroPage() {
                 <directionalLight position={[10, 10, 5]} intensity={1} />
                 <pointLight position={[8, 4, 5]} intensity={0.5} />
                 <FirstPersonCamera collidersRef={collidersRef} />
-                <MetroModel ref={modelRefCallback} />
+                {selectedScene === Scene.Metro && (
+                    <MetroModel ref={modelRefCallback} />
+                )}
+                {selectedScene === Scene.Forest && (
+                    <ForestModel ref={modelRefCallback} />
+                )}
                 {selectedTrip === Trip.Shroom && (
                     <EffectComposer enableNormalPass={false} multisampling={2}>
                         <PsychedelicEffectFX
