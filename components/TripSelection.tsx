@@ -1,11 +1,11 @@
 import {
     DropdownMenu,
-    DropdownMenuTrigger,
+    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuCheckboxItem,
-} from "@radix-ui/react-dropdown-menu";
+    DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { SelectionProps, Trip } from "@/lib/types";
 

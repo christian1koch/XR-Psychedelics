@@ -1,38 +1,15 @@
 "use client";
 import { MetroModel } from "@/app/demo/MetroModel";
 import { ForestModel } from "@/app/demo/ForestModel";
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-    AfterImageEffect,
-    ASCIIEffect,
-    ElectricPatternEffect,
-    PsychedelicEffectFX,
-    PsychEffect,
-    WaveDistortionEffect,
-} from "@/shaders";
-import { CustomPixelateEffect } from "@/shaders/CustomPixelEffect";
-import PurpleVoidEffect from "@/shaders/PurpleVoidEffect";
 import { Canvas } from "@react-three/fiber";
-import {
-    BrightnessContrast,
-    EffectComposer,
-    HueSaturation,
-} from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
 import { useRef, useState } from "react";
 import { Group, Mesh } from "three";
 import { FirstPersonCamera } from "@/components/FirstPersonCamera";
 import TripSelection from "@/components/TripSelection";
 import { TripScene, Trip, SceneInitialPositions } from "@/lib/types";
 import SceneSelection from "@/components/SceneSeletion";
+import EffectRenderer from "@/components/EffectRenderer";
+import SceneRenderer from "@/components/SceneRenderer";
 
 const InitialPositions: SceneInitialPositions = {
     Metro: [8, 3, 5],
@@ -45,18 +22,6 @@ export default function MetroPage() {
         TripScene.Metro
     );
     const collidersRef = useRef<Mesh[]>([]);
-
-    const modelRefCallback = (group: Group | null) => {
-        if (group) {
-            const meshes: Mesh[] = [];
-            group.traverse((child) => {
-                if ((child as Mesh).isMesh) {
-                    meshes.push(child as Mesh);
-                }
-            });
-            collidersRef.current = meshes;
-        }
-    };
 
     return (
         <>
@@ -84,74 +49,15 @@ export default function MetroPage() {
                 <directionalLight position={[10, 10, 5]} intensity={1} />
                 <pointLight position={[8, 4, 5]} intensity={0.5} />
                 <FirstPersonCamera
+                    key={selectedScene}
                     collidersRef={collidersRef}
                     initialCameraPos={InitialPositions[TripScene.Metro]}
                 />
-                {selectedScene === TripScene.Metro && (
-                    <MetroModel ref={modelRefCallback} />
-                )}
-                {selectedScene === TripScene.Forest && (
-                    <ForestModel ref={modelRefCallback} />
-                )}
-                {selectedTrip === Trip.Shroom && (
-                    <EffectComposer enableNormalPass={false} multisampling={2}>
-                        <PsychedelicEffectFX
-                            waveSpeed={2}
-                            noiseDistortionStrength={0.5}
-                            noiseDistortionScale={4}
-                            noiseDistortionSpeed={0.2}
-                            chromaticOffset={0.004}
-                        />
-                    </EffectComposer>
-                )}
-                {selectedTrip === Trip.ASCII && <ASCIIEffect />}
-                {selectedTrip === Trip.AfterImage && (
-                    <EffectComposer>
-                        <AfterImageEffect damp={0.8} />
-                    </EffectComposer>
-                )}
-                {selectedTrip === Trip.CustomPixelate && (
-                    <EffectComposer>
-                        <CustomPixelateEffect />
-                    </EffectComposer>
-                )}
-                {selectedTrip === Trip.Test && (
-                    <>
-                        <EffectComposer>
-                            {/* <Vignette key="vignette" darkness={0.5} offset={0.3} /> */}
-                            {/* <AnimatedShroomPostFX /> */}
-                            <WaveDistortionEffect amplitude={0.01} />
-                            <BrightnessContrast
-                                brightness={50}
-                                contrast={100}
-                            />
-                            <AfterImageEffect damp={0.7} />
-                            <ElectricPatternEffect
-                                intensity={0.5}
-                                scale={0.5}
-                                speed={0.02}
-                                colorA={[141 / 255, 232 / 255, 189 / 255]}
-                                // purple
-                                colorB={[141 / 255, 89 / 255, 232 / 255]}
-                            />
-                            <HueSaturation
-                                blendFunction={BlendFunction.COLOR_BURN} // blend mode
-                                hue={Math.PI / 2} // hue in radians
-                                saturation={0.999} // saturation in radians
-                            />
-                        </EffectComposer>
-                    </>
-                )}
-                {selectedTrip === Trip.PurpleVoid && (
-                    <EffectComposer>
-                        <PurpleVoidEffect />
-                    </EffectComposer>
-                )}
-                {selectedTrip === Trip.Psych && (
-                    <EffectComposer>
-                        <PsychEffect />
-                    </EffectComposer>
-                )}
+                <SceneRenderer
+                    selectedScene={selectedScene}
+                    collidersRef={collidersRef}
+                />
+                <EffectRenderer selectedTrip={selectedTrip} />
             </Canvas>
         </>
     );

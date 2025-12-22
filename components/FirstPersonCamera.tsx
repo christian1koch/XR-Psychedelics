@@ -1,3 +1,4 @@
+"use client";
 import { PointerLockControls } from "@react-three/drei";
 import { useThree, useFrame } from "@react-three/fiber";
 import { RefObject, useRef, useEffect } from "react";
@@ -76,7 +77,7 @@ export function FirstPersonCamera({
             window.removeEventListener("keydown", onKeyDown);
             window.removeEventListener("keyup", onKeyUp);
         };
-    }, [camera]);
+    }, [camera, initialCameraPos]);
 
     useFrame((_, delta) => {
         const { forward, backward, left, right } = moveState.current;

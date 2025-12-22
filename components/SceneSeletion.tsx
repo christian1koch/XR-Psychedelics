@@ -1,14 +1,13 @@
+import { Button } from "./ui/button";
+import { TripScene, SelectionProps } from "@/lib/types";
 import {
     DropdownMenu,
-    DropdownMenuTrigger,
+    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuCheckboxItem,
-} from "@radix-ui/react-dropdown-menu";
-
-import { Button } from "./ui/button";
-import { TripScene, SelectionProps } from "@/lib/types";
+    DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export default function SceneSelection({
     onItemSelect,
