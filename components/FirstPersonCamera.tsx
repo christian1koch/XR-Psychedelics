@@ -5,8 +5,10 @@ import { Mesh, Vector3, Raycaster } from "three";
 
 export function FirstPersonCamera({
     collidersRef,
+    initialCameraPos,
 }: {
     collidersRef: RefObject<Mesh[]>;
+    initialCameraPos: [number, number, number];
 }) {
     const { camera } = useThree();
     const direction = useRef(new Vector3());
@@ -24,7 +26,7 @@ export function FirstPersonCamera({
 
     useEffect(() => {
         // Start inside the metro station
-        camera.position.set(8, 3, 5);
+        camera.position.set(...initialCameraPos);
 
         const onKeyDown = (e: KeyboardEvent) => {
             switch (e.code) {

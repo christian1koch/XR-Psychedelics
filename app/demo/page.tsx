@@ -30,25 +30,20 @@ import { BlendFunction } from "postprocessing";
 import { useRef, useState } from "react";
 import { Group, Mesh } from "three";
 import { FirstPersonCamera } from "@/components/FirstPersonCamera";
+import TripSelection from "@/components/TripSelection";
+import { TripScene, Trip, SceneInitialPositions } from "@/lib/types";
+import SceneSelection from "@/components/SceneSeletion";
 
-enum Scene {
-    Metro = "Metro",
-    Forest = "Forest",
-}
+const InitialPositions: SceneInitialPositions = {
+    Metro: [8, 3, 5],
+    Forest: [8, 3, 5],
+};
 
-enum Trip {
-    NONE = "None",
-    ASCII = "ASCII",
-    Shroom = "Shroom",
-    AfterImage = "AfterImage (dizzy 🤮)",
-    CustomPixelate = "CustomPixelate",
-    Test = "Test",
-    PurpleVoid = "PurpleVoid",
-    Psych = "Psych",
-}
 export default function MetroPage() {
     const [selectedTrip, setSelectedTrip] = useState<Trip>(Trip.NONE);
-    const [selectedScene, setSelectedScene] = useState<Scene>(Scene.Metro);
+    const [selectedScene, setSelectedScene] = useState<TripScene>(
+        TripScene.Metro
+    );
     const collidersRef = useRef<Mesh[]>([]);
 
     const modelRefCallback = (group: Group | null) => {
@@ -67,53 +62,15 @@ export default function MetroPage() {
         <>
             <div className="absolute">
                 <div className="absolute top-4 left-4 z-10 flex flex-col">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline">Change Trip 💊</Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <>
-                                {Object.values(Trip).map((trip) => (
-                                    <DropdownMenuCheckboxItem
-                                        key={trip}
-                                        checked={trip === selectedTrip}
-                                        onCheckedChange={() =>
-                                            setSelectedTrip(trip)
-                                        }
-                                    >
-                                        {trip}
-                                    </DropdownMenuCheckboxItem>
-                                ))}
-                            </>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <TripSelection
+                        selectedItem={selectedTrip}
+                        onItemSelect={setSelectedTrip}
+                    />
+                    <SceneSelection
+                        selectedItem={selectedScene}
+                        onItemSelect={setSelectedScene}
+                    />
 
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="mt-2">
-                                Change Scene 🌲
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>Scene</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <>
-                                {Object.values(Scene).map((scene) => (
-                                    <DropdownMenuCheckboxItem
-                                        key={scene}
-                                        checked={scene === selectedScene}
-                                        onCheckedChange={() =>
-                                            setSelectedScene(scene)
-                                        }
-                                    >
-                                        {scene}
-                                    </DropdownMenuCheckboxItem>
-                                ))}
-                            </>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                     <div className="bg-background mt-2 w-full justify-center rounded-md p-1 text-center">
                         Click anywhere and move around
                     </div>
@@ -126,11 +83,14 @@ export default function MetroPage() {
                 <ambientLight intensity={0.5} />
                 <directionalLight position={[10, 10, 5]} intensity={1} />
                 <pointLight position={[8, 4, 5]} intensity={0.5} />
-                <FirstPersonCamera collidersRef={collidersRef} />
-                {selectedScene === Scene.Metro && (
+                <FirstPersonCamera
+                    collidersRef={collidersRef}
+                    initialCameraPos={InitialPositions[TripScene.Metro]}
+                />
+                {selectedScene === TripScene.Metro && (
                     <MetroModel ref={modelRefCallback} />
                 )}
-                {selectedScene === Scene.Forest && (
+                {selectedScene === TripScene.Forest && (
                     <ForestModel ref={modelRefCallback} />
                 )}
                 {selectedTrip === Trip.Shroom && (
