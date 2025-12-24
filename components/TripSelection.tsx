@@ -7,12 +7,11 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { SelectionProps, Trip } from "@/lib/types";
+import { Trip } from "@/lib/types";
+import { useTripExperience } from "./TripExperienceContext";
 
-export default function TripSelection({
-    selectedItem: selectedTrip,
-    onItemSelect: setSelectedTrip,
-}: SelectionProps<Trip>) {
+export default function TripSelection() {
+    const { selectedTrip, setSelectedTrip } = useTripExperience();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

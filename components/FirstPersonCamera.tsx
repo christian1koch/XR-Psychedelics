@@ -1,16 +1,16 @@
 "use client";
 import { PointerLockControls } from "@react-three/drei";
 import { useThree, useFrame } from "@react-three/fiber";
-import { RefObject, useRef, useEffect } from "react";
-import { Mesh, Vector3, Raycaster } from "three";
+import { useRef, useEffect } from "react";
+import { Vector3, Raycaster } from "three";
+import { useTripExperience } from "./TripExperienceContext";
 
 export function FirstPersonCamera({
-    collidersRef,
     initialCameraPos,
 }: {
-    collidersRef: RefObject<Mesh[]>;
     initialCameraPos: [number, number, number];
 }) {
+    const { collidersRef } = useTripExperience();
     const { camera } = useThree();
     const direction = useRef(new Vector3());
     const raycaster = useRef(new Raycaster());

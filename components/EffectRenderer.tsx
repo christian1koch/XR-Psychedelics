@@ -16,14 +16,10 @@ import {
     HueSaturation,
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
+import { useTripExperience } from "./TripExperienceContext";
 
-export default function EffectRenderer({
-    selectedTrip,
-    strength = 1.0,
-}: {
-    selectedTrip: Trip;
-    strength?: number;
-}) {
+export default function EffectRenderer() {
+    const { selectedTrip, strength } = useTripExperience();
     return (
         <>
             {selectedTrip === Trip.Shroom && (

@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { TripScene, SelectionProps } from "@/lib/types";
+import { TripScene } from "@/lib/types";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -8,11 +8,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useTripExperience } from "./TripExperienceContext";
 
-export default function SceneSelection({
-    onItemSelect,
-    selectedItem,
-}: SelectionProps<TripScene>) {
+export default function SceneSelection() {
+    const { selectedScene, setSelectedScene } = useTripExperience();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -27,8 +26,8 @@ export default function SceneSelection({
                     {Object.values(TripScene).map((scene) => (
                         <DropdownMenuCheckboxItem
                             key={scene}
-                            checked={scene === selectedItem}
-                            onCheckedChange={() => onItemSelect(scene)}
+                            checked={scene === selectedScene}
+                            onCheckedChange={() => setSelectedScene(scene)}
                         >
                             {scene}
                         </DropdownMenuCheckboxItem>
