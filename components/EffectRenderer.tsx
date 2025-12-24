@@ -17,9 +17,20 @@ import {
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import { useTripExperience } from "./TripExperienceContext";
+import { useXR } from "@react-three/xr";
+import XREffectOverlay from "./XREffectOverlay";
 
 export default function EffectRenderer() {
     const { selectedTrip, strength } = useTripExperience();
+    const isPresenting = useXR(
+        (state) =>
+            state.mode === "immersive-vr" || state.mode === "immersive-ar"
+    );
+
+    if (isPresenting) {
+        return <XREffectOverlay />;
+    }
+
     return (
         <>
             {selectedTrip === Trip.Shroom && (
