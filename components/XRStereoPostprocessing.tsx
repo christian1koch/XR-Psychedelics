@@ -231,7 +231,11 @@ function renderEye(
     if (xrRenderTarget) {
         gl.setRenderTarget = ((target, ...args) => {
             if (target === null) {
-                return originalSetRenderTarget(xrRenderTarget, ...args);
+                const result = originalSetRenderTarget(xrRenderTarget, ...args);
+                gl.setViewport(viewport.x, viewport.y, width, height);
+                gl.setScissor(viewport.x, viewport.y, width, height);
+                gl.setScissorTest(true);
+                return result;
             }
             return originalSetRenderTarget(target, ...args);
         }) as typeof gl.setRenderTarget;
