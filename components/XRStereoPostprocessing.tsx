@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useXR } from "@react-three/xr";
-import { Vector2 } from "three";
+import { Color, Vector2 } from "three";
 import type { Camera, Scene, Vector4, WebGLRenderer } from "three";
 import {
     ASCIIEffect,
@@ -107,7 +107,12 @@ export default function XRStereoPostprocessing() {
             return;
         }
 
-        const xrCamera = state.gl.xr.getCamera();
+        const xrManager = state.gl.xr as unknown as {
+            getCamera: () => { cameras: Array<Camera & { viewport?: Vector4 }> };
+            updateCamera: (camera: Camera) => void;
+        };
+        xrManager.updateCamera(state.camera);
+        const xrCamera = xrManager.getCamera();
         const leftEye = xrCamera.cameras[0];
         const rightEye = xrCamera.cameras[1];
 
@@ -126,8 +131,39 @@ export default function XRStereoPostprocessing() {
         gl.autoClear = false;
         gl.setScissorTest(true);
 
+        const prevProjection = state.camera.projectionMatrix.clone();
+        const prevProjectionInverse = state.camera.projectionMatrixInverse.clone();
+        const prevMatrixWorld = state.camera.matrixWorld.clone();
+        const prevMatrixWorldInverse = state.camera.matrixWorldInverse.clone();
+        const prevPosition = state.camera.position.clone();
+        const prevQuaternion = state.camera.quaternion.clone();
+        const prevScale = state.camera.scale.clone();
+
+        state.camera.matrixWorld.copy(leftEye.matrixWorld);
+        state.camera.matrixWorldInverse.copy(leftEye.matrixWorldInverse);
+        state.camera.projectionMatrix.copy(leftEye.projectionMatrix);
+        state.camera.projectionMatrixInverse.copy(leftEye.projectionMatrixInverse);
+        state.camera.position.copy(leftEye.position);
+        state.camera.quaternion.copy(leftEye.quaternion);
+        state.camera.scale.copy(leftEye.scale);
         renderEye(gl, leftComposer, leftEye, delta);
+
+        state.camera.matrixWorld.copy(rightEye.matrixWorld);
+        state.camera.matrixWorldInverse.copy(rightEye.matrixWorldInverse);
+        state.camera.projectionMatrix.copy(rightEye.projectionMatrix);
+        state.camera.projectionMatrixInverse.copy(rightEye.projectionMatrixInverse);
+        state.camera.position.copy(rightEye.position);
+        state.camera.quaternion.copy(rightEye.quaternion);
+        state.camera.scale.copy(rightEye.scale);
         renderEye(gl, rightComposer, rightEye, delta);
+
+        state.camera.matrixWorld.copy(prevMatrixWorld);
+        state.camera.matrixWorldInverse.copy(prevMatrixWorldInverse);
+        state.camera.projectionMatrix.copy(prevProjection);
+        state.camera.projectionMatrixInverse.copy(prevProjectionInverse);
+        state.camera.position.copy(prevPosition);
+        state.camera.quaternion.copy(prevQuaternion);
+        state.camera.scale.copy(prevScale);
 
         gl.setScissorTest(false);
         gl.autoClear = prevAutoClear;
@@ -147,6 +183,8 @@ function setupComposer(
     composer.removeAllPasses();
 
     const renderPass = new RenderPass(scene, camera);
+    renderPass.clearPass.overrideClearColor = new Color(0x000000);
+    renderPass.clearPass.overrideClearAlpha = 1;
     composer.addPass(renderPass);
 
     let effectPass: EffectPass | undefined;
@@ -176,6 +214,11 @@ function renderEye(
     const height = Math.max(1, Math.floor(viewport.w));
 
     stereo.composer.setSize(width, height);
+    const prevClearColor = new Color();
+    gl.getClearColor(prevClearColor);
+    const prevClearAlpha = gl.getClearAlpha();
+
+    gl.setClearColor(0x000000, 1);
     gl.setViewport(viewport.x, viewport.y, width, height);
     gl.setScissor(viewport.x, viewport.y, width, height);
     gl.clear();
@@ -183,6 +226,8 @@ function renderEye(
     stereo.composer.setMainCamera(eyeCamera);
     const xrRenderTarget = gl.getRenderTarget();
     const originalSetRenderTarget = gl.setRenderTarget.bind(gl);
+    const prevXrEnabled = gl.xr.enabled;
+    gl.xr.enabled = false;
     if (xrRenderTarget) {
         gl.setRenderTarget = ((target, ...args) => {
             if (target === null) {
@@ -197,6 +242,9 @@ function renderEye(
     if (xrRenderTarget) {
         gl.setRenderTarget = originalSetRenderTarget;
     }
+    gl.xr.enabled = prevXrEnabled;
+
+    gl.setClearColor(prevClearColor, prevClearAlpha);
 }
 
 function createEffectSet(trip: Trip, strength: number): EffectSet {
