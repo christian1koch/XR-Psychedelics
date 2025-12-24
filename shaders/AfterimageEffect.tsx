@@ -55,7 +55,7 @@ void main() {
  * AfterImage effect implementation
  * Accumulates frames over time for a trailing/ghosting effect
  */
-class AfterImageEffectImpl extends Effect {
+export class AfterImageEffectImpl extends Effect {
     // Two buffers for ping-pong rendering
     private textureA: RenderTargetType;
     private textureB: RenderTargetType;

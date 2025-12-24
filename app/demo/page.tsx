@@ -1,6 +1,7 @@
 "use client";
 import { MetroModel } from "@/app/demo/MetroModel";
 import { ForestModel } from "@/app/demo/ForestModel";
+import { Slider } from "@/components/ui/slider";
 import { Canvas } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import { Group, Mesh } from "three";
@@ -21,6 +22,7 @@ export default function MetroPage() {
     const [selectedScene, setSelectedScene] = useState<TripScene>(
         TripScene.Metro
     );
+    const [strength, setStrength] = useState<number>(1);
     const collidersRef = useRef<Mesh[]>([]);
 
     return (
@@ -35,6 +37,18 @@ export default function MetroPage() {
                         selectedItem={selectedScene}
                         onItemSelect={setSelectedScene}
                     />
+
+                    <div className="bg-background mt-2 w-full rounded-md p-4">
+                        <div className="mb-2 text-center text-sm font-medium">
+                            Strength: {strength.toFixed(2)}
+                        </div>
+                        <Slider
+                            value={[strength]}
+                            onValueChange={(value) => setStrength(value[0])}
+                            max={2}
+                            step={0.05}
+                        />
+                    </div>
 
                     <div className="bg-background mt-2 w-full justify-center rounded-md p-1 text-center">
                         Click anywhere and move around
@@ -57,7 +71,10 @@ export default function MetroPage() {
                     selectedScene={selectedScene}
                     collidersRef={collidersRef}
                 />
-                <EffectRenderer selectedTrip={selectedTrip} />
+                <EffectRenderer
+                    selectedTrip={selectedTrip}
+                    strength={strength}
+                />
             </Canvas>
         </>
     );

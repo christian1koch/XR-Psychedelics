@@ -1,18 +1,21 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
-import { BlendFunction } from "postprocessing";
+import {
+    BlendFunction,
+    BrightnessContrastEffect,
+    HueSaturationEffect,
+} from "postprocessing";
 
 import {
     WaveDistortionEffect,
     WaveDistortionEffectImpl,
 } from "./WaveDistortionEffect";
-import { AfterImageEffect } from "./AfterimageEffect";
+import { AfterImageEffect, AfterImageEffectImpl } from "./AfterimageEffect";
 import {
     ElectricPatternEffect,
     ElectricPatternEffectImpl,
 } from "./ElectricPatternEffect";
-import { BrightnessContrast, HueSaturation } from "@react-three/postprocessing";
 /**
  * PurpleVoidEffect
  * Composes several existing effects (WaveDistortion, BrightnessContrast, AfterImage,
@@ -21,12 +24,31 @@ import { BrightnessContrast, HueSaturation } from "@react-three/postprocessing";
  *
  * Usage: place <PurpleVoidEffect /> inside your EffectComposer / effects list.
  */
-export function PurpleVoidEffect({ speed = 1 }: { speed?: number }) {
+export function PurpleVoidEffect({
+    speed = 1,
+    strength = 1,
+}: {
+    speed?: number;
+    strength?: number;
+}) {
     const waveRef = useRef<WaveDistortionEffectImpl | null>(null);
-    const afterRef = useRef<any | null>(null);
+    const afterRef = useRef<AfterImageEffectImpl | null>(null);
     const electricRef = useRef<ElectricPatternEffectImpl | null>(null);
-    const brightnessRef = useRef<any>(null);
-    const hueRef = useRef<any>(null);
+
+    // Manual effect instances
+    const brightnessEffect = useMemo(
+        () => new BrightnessContrastEffect({ brightness: 0, contrast: 0 }),
+        []
+    );
+    const hueEffect = useMemo(
+        () =>
+            new HueSaturationEffect({
+                hue: 0,
+                saturation: 0,
+                blendFunction: BlendFunction.LINEAR_DODGE,
+            }),
+        []
+    );
 
     useFrame(({ clock }) => {
         const t = clock.getElapsedTime();
@@ -35,7 +57,7 @@ export function PurpleVoidEffect({ speed = 1 }: { speed?: number }) {
         // Wave: subtle breathing + layered motion
         const w = waveRef.current;
         if (w) {
-            w.amplitude = 0.009 + Math.sin(ts * 1.25) * 0.004; // 0.005..0.013
+            w.amplitude = (0.009 + Math.sin(ts * 1.25) * 0.004) * strength; // 0.005..0.013
             w.frequency = 8.0 + Math.cos(ts * 0.8) * 2.5; // 5.5..10.5
             w.speed = 0.6 + Math.sin(ts * 0.4) * 0.4; // 0.2..1.0
         }
@@ -44,14 +66,15 @@ export function PurpleVoidEffect({ speed = 1 }: { speed?: number }) {
         const a = afterRef.current;
         if (a) {
             // keep the damp mostly high for visible trails but pulse slightly
-            a.damp = 0.86 + (Math.sin(ts * 0.35) + 1.0) * 0.02; // ~0.86..0.90
+            a.damp = (0.86 + (Math.sin(ts * 0.35) + 1.0) * 0.02) * strength; // ~0.86..0.90
         }
 
         // Electric pattern: flash intensity and scale movement
         const e = electricRef.current;
         if (e) {
             // fast pulsing intensity in bright spots
-            e.intensity = 0.35 + Math.max(0, Math.sin(ts * 3.0)) * 0.9; // 0.35..1.25
+            e.intensity =
+                (0.35 + Math.max(0, Math.sin(ts * 3.0)) * 0.9) * strength; // 0.35..1.25
             e.scale = 0.45 + (Math.sin(ts * 1.6) + 1.0) * 0.25; // ~0.45..0.95
             e.speed = 0.01 + Math.abs(Math.sin(ts * 0.9)) * 0.04; // ~0.01..0.05
 
@@ -73,23 +96,22 @@ export function PurpleVoidEffect({ speed = 1 }: { speed?: number }) {
         }
 
         // Brightness & Contrast: subtle breathing to make flashes pop
-        const b = brightnessRef.current;
+        const b = brightnessEffect;
         if (b) {
-            // many postprocessing wrappers expose property names matching prop names
-            // these values match the scale used in PurpleVoid snippet (50/100)
-            if (typeof b.brightness !== "undefined")
-                b.brightness = 45 + Math.sin(ts * 0.7) * 8; // 37..53
-            if (typeof b.contrast !== "undefined")
-                b.contrast = 95 + Math.cos(ts * 0.5) * 12; // 83..107
+            // Scaled down for standard effect range (-1 to 1)
+            const rawBrightNormalized =
+                (0.2 + Math.sin(ts * 0.7) * 0.1) * strength;
+            b.brightness = clamp(rawBrightNormalized, -0.5, 0.5);
+
+            const rawContrast = (0.2 + Math.cos(ts * 0.5) * 0.1) * strength;
+            b.contrast = clamp(rawContrast, -0.5, 0.5);
         }
 
         // Hue/Saturation: rotate hue slowly + slight saturation bounce
-        const h = hueRef.current;
+        const h = hueEffect;
         if (h) {
-            if (typeof h.hue !== "undefined")
-                h.hue = Math.sin(ts * 0.15) * (Math.PI / 3); // -pi/3 .. pi/3
-            if (typeof h.saturation !== "undefined")
-                h.saturation = 0.95 + Math.sin(ts * 0.9) * 0.05; // slight wobble
+            h.hue = Math.sin(ts * 0.15) * (Math.PI / 3) * strength; // -pi/3 .. pi/3
+            h.saturation = (0.95 + Math.sin(ts * 0.9) * 0.05) * strength; // slight wobble
         }
     });
 
@@ -101,12 +123,7 @@ export function PurpleVoidEffect({ speed = 1 }: { speed?: number }) {
                 frequency={9}
                 speed={0.5}
             />
-            <BrightnessContrast
-                ref={brightnessRef}
-                brightness={50}
-                contrast={100}
-            />
-            <AfterImageEffect ref={afterRef} damp={0.7} />
+            <primitive object={brightnessEffect} dispose={null} />
             <ElectricPatternEffect
                 ref={electricRef}
                 intensity={0.5}
@@ -115,12 +132,8 @@ export function PurpleVoidEffect({ speed = 1 }: { speed?: number }) {
                 colorA={[141 / 255, 232 / 255, 189 / 255]}
                 colorB={[141 / 255, 89 / 255, 232 / 255]}
             />
-            <HueSaturation
-                ref={hueRef}
-                blendFunction={BlendFunction.LINEAR_DODGE}
-                hue={Math.PI / 2}
-                saturation={0.999}
-            />
+            <primitive object={hueEffect} dispose={null} />
+            <AfterImageEffect ref={afterRef} damp={0.96} />
         </>
     );
 }
