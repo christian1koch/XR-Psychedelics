@@ -1,6 +1,5 @@
-import { useFrame, useThree } from "@react-three/fiber";
-import { useRef, useMemo, useEffect } from "react";
-import * as THREE from "three";
+import { useFrame } from "@react-three/fiber";
+import { useMemo } from "react";
 import { useTripExperience } from "./TripExperienceContext";
 import { Trip } from "@/lib/types";
 

@@ -207,6 +207,14 @@ export function PsychedelicEffectFX({
     // Render effects as normal JSX inside a fragment (keeps natural order)
     return (
         <>
+            {enableWave && (
+                <WaveDistortion
+                    key="wave"
+                    amplitude={waveAmplitude}
+                    frequency={waveFrequency}
+                    speed={waveSpeed}
+                />
+            )}
             {enableNoiseDistortion && (
                 <NoiseDistortionEffect
                     key="noiseDistort"
@@ -238,6 +246,10 @@ export function PsychedelicEffectFX({
                     intensity={electricIntensity}
                     scale={electricScale}
                 />
+            )}
+
+            {enableTrail && (
+                <AfterImageEffect key="trail" damp={trailDamp} />
             )}
 
             {enableBloom && (

@@ -18,10 +18,17 @@ import {
 import { BlendFunction } from "postprocessing";
 import { useTripExperience } from "./TripExperienceContext";
 import { useXR } from "@react-three/xr";
-import XREffectOverlay from "./XREffectOverlay";
+import XRStereoPostprocessing from "./XRStereoPostprocessing";
 
 export default function EffectRenderer() {
     const { selectedTrip, strength } = useTripExperience();
+
+    const { mode } = useXR();
+    const isPresenting = mode === "immersive-vr" || mode === "immersive-ar";
+
+    if (isPresenting) {
+        return <XRStereoPostprocessing />;
+    }
 
     return (
         <>

@@ -1,7 +1,6 @@
-import { Uniform, Vector2 } from "three";
-import { forwardRef, Ref } from "react";
-import { EffectComposer } from "@react-three/postprocessing";
-import { ThreeElement, ThreeElements } from "@react-three/fiber";
+import { Uniform } from "three";
+import { Ref } from "react";
+import { ThreeElements } from "@react-three/fiber";
 import { Effect } from "postprocessing";
 
 const fragmentShader = `

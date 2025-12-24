@@ -7,7 +7,6 @@ import {
     useRef,
     useState,
     ReactNode,
-    MutableRefObject,
     RefObject,
 } from "react";
 import { Mesh } from "three";
