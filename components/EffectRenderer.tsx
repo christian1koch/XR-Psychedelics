@@ -22,14 +22,6 @@ import XREffectOverlay from "./XREffectOverlay";
 
 export default function EffectRenderer() {
     const { selectedTrip, strength } = useTripExperience();
-    const isPresenting = useXR(
-        (state) =>
-            state.mode === "immersive-vr" || state.mode === "immersive-ar"
-    );
-
-    if (isPresenting) {
-        return <XREffectOverlay />;
-    }
 
     return (
         <>
