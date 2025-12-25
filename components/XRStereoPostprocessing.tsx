@@ -50,16 +50,19 @@ export default function XRStereoPostprocessing() {
 
     const isPresenting = mode === "immersive-vr" || mode === "immersive-ar";
 
+    // One composer per eye to keep stereo effects isolated.
     const composersRef = useRef<{
         left?: StereoComposer;
         right?: StereoComposer;
     }>({});
+    // Each eye gets its own effect instances to avoid shared uniforms.
     const effectSetsRef = useRef<{
         left?: EffectSet;
         right?: EffectSet;
     }>({});
 
     useEffect(() => {
+        // Rebuild effects/composers when trip or strength changes.
         effectSetsRef.current.left?.dispose();
         effectSetsRef.current.right?.dispose();
 
@@ -94,6 +97,7 @@ export default function XRStereoPostprocessing() {
     }, [camera, gl, scene, selectedTrip, strength]);
 
     useFrame((state, delta) => {
+        // Only run this pipeline inside an XR session.
         if (!isPresenting) {
             return;
         }
@@ -107,6 +111,7 @@ export default function XRStereoPostprocessing() {
             return;
         }
 
+        // Pull the real XR eye cameras from the renderer.
         const xrManager = state.gl.xr as unknown as {
             getCamera: () => { cameras: Array<Camera & { viewport?: Vector4 }> };
             updateCamera: (camera: Camera) => void;
@@ -120,6 +125,7 @@ export default function XRStereoPostprocessing() {
             return;
         }
 
+        // Update effect uniforms and time-based animations.
         leftSet.updateParams?.(strength);
         rightSet.updateParams?.(strength);
 
@@ -127,10 +133,12 @@ export default function XRStereoPostprocessing() {
         leftSet.updateFrame?.(delta, elapsed, strength);
         rightSet.updateFrame?.(delta, elapsed, strength);
 
+        // Disable auto clear so we can draw both eyes into one frame.
         const prevAutoClear = gl.autoClear;
         gl.autoClear = false;
         gl.setScissorTest(true);
 
+        // Save the main camera state so we can restore it later.
         const prevProjection = state.camera.projectionMatrix.clone();
         const prevProjectionInverse = state.camera.projectionMatrixInverse.clone();
         const prevMatrixWorld = state.camera.matrixWorld.clone();
@@ -139,6 +147,7 @@ export default function XRStereoPostprocessing() {
         const prevQuaternion = state.camera.quaternion.clone();
         const prevScale = state.camera.scale.clone();
 
+        // Render left eye.
         state.camera.matrixWorld.copy(leftEye.matrixWorld);
         state.camera.matrixWorldInverse.copy(leftEye.matrixWorldInverse);
         state.camera.projectionMatrix.copy(leftEye.projectionMatrix);
@@ -148,6 +157,7 @@ export default function XRStereoPostprocessing() {
         state.camera.scale.copy(leftEye.scale);
         renderEye(gl, leftComposer, leftEye, delta);
 
+        // Render right eye.
         state.camera.matrixWorld.copy(rightEye.matrixWorld);
         state.camera.matrixWorldInverse.copy(rightEye.matrixWorldInverse);
         state.camera.projectionMatrix.copy(rightEye.projectionMatrix);
@@ -157,6 +167,7 @@ export default function XRStereoPostprocessing() {
         state.camera.scale.copy(rightEye.scale);
         renderEye(gl, rightComposer, rightEye, delta);
 
+        // Restore the main camera so the rest of the frame is consistent.
         state.camera.matrixWorld.copy(prevMatrixWorld);
         state.camera.matrixWorldInverse.copy(prevMatrixWorldInverse);
         state.camera.projectionMatrix.copy(prevProjection);
@@ -179,6 +190,7 @@ function setupComposer(
     camera: Camera,
     effects: Effect[]
 ): StereoComposer {
+    // Build the pass chain for a single eye.
     const composer = existing ?? new EffectComposer(gl);
     composer.removeAllPasses();
 
@@ -205,6 +217,7 @@ function renderEye(
     eyeCamera: Camera & { viewport?: Vector4 },
     delta: number
 ) {
+    // Each XR eye provides a viewport inside the shared framebuffer.
     const viewport = eyeCamera.viewport;
     if (!viewport) {
         return;
@@ -213,6 +226,7 @@ function renderEye(
     const width = Math.max(1, Math.floor(viewport.z));
     const height = Math.max(1, Math.floor(viewport.w));
 
+    // Match the composer buffers to the eye viewport.
     stereo.composer.setSize(width, height);
     const prevClearColor = new Color();
     gl.getClearColor(prevClearColor);
@@ -223,6 +237,7 @@ function renderEye(
     gl.setScissor(viewport.x, viewport.y, width, height);
     gl.clear();
 
+    // Force the effect chain to render into the XR render target.
     stereo.composer.setMainCamera(eyeCamera);
     const xrRenderTarget = gl.getRenderTarget();
     const originalSetRenderTarget = gl.setRenderTarget.bind(gl);
@@ -232,6 +247,7 @@ function renderEye(
         gl.setRenderTarget = ((target, ...args) => {
             if (target === null) {
                 const result = originalSetRenderTarget(xrRenderTarget, ...args);
+                // Re-apply the eye viewport after internal target switches.
                 gl.setViewport(viewport.x, viewport.y, width, height);
                 gl.setScissor(viewport.x, viewport.y, width, height);
                 gl.setScissorTest(true);
@@ -241,6 +257,7 @@ function renderEye(
         }) as typeof gl.setRenderTarget;
     }
 
+    // Render all passes for this eye.
     stereo.composer.render(delta);
 
     if (xrRenderTarget) {
@@ -252,6 +269,7 @@ function renderEye(
 }
 
 function createEffectSet(trip: Trip, strength: number): EffectSet {
+    // Map the selected trip to the right effect stack.
     switch (trip) {
         case Trip.Shroom:
             return createShroomEffects(strength);
