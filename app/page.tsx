@@ -25,7 +25,17 @@ export default function App() {
                     Enter VR
                 </button>
             </div>
-            <Canvas>
+            <Canvas
+                style={{
+                    height: "100vh",
+                }}
+                camera={{
+                    position: InitialPositions[TripScene.Metro],
+                    fov: 75,
+                    near: 0.1,
+                    far: 1000,
+                }}
+            >
                 <XR store={store}>
                     <XROrigin position={InitialPositions[TripScene.Metro]} />
                     <SceneContent />
