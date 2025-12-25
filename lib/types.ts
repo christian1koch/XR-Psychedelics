@@ -1,3 +1,5 @@
+import type { Effect } from "postprocessing";
+
 export enum Trip {
     NONE = "None",
     ASCII = "ASCII",
@@ -21,4 +23,11 @@ export enum TripScene {
 
 export type SceneInitialPositions = {
     [tripScene in TripScene]: [number, number, number];
+};
+
+export type EffectSet = {
+    effects: Effect[];
+    updateParams?: (strength: number) => void;
+    updateFrame?: (delta: number, elapsed: number, strength: number) => void;
+    dispose: () => void;
 };
