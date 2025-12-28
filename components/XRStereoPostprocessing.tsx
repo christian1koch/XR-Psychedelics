@@ -5,7 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useXR } from "@react-three/xr";
 import { Color } from "three";
 import type { Camera, Scene, Vector4, WebGLRenderer } from "three";
-import { EffectComposer, EffectPass, RenderPass } from "postprocessing";
+import { CopyPass, EffectComposer, EffectPass, RenderPass } from "postprocessing";
 import type { Effect } from "postprocessing";
 import { EffectSet } from "@/lib/types";
 import { useTripExperience } from "./TripExperienceContext";
@@ -179,7 +179,9 @@ function setupComposer(
         effectPass.renderToScreen = true;
         composer.addPass(effectPass);
     } else {
-        renderPass.renderToScreen = true;
+        const copyPass = new CopyPass();
+        copyPass.renderToScreen = true;
+        composer.addPass(copyPass);
     }
 
     return { composer, renderPass, effectPass };
@@ -201,7 +203,7 @@ function renderEye(
     const height = Math.max(1, Math.floor(viewport.w));
 
     // Match the composer buffers to the eye viewport.
-    stereo.composer.setSize(width, height);
+    resizeComposerBuffers(stereo.composer, width, height);
     const prevClearColor = new Color();
     gl.getClearColor(prevClearColor);
     const prevClearAlpha = gl.getClearAlpha();
@@ -240,4 +242,21 @@ function renderEye(
     gl.xr.enabled = prevXrEnabled;
 
     gl.setClearColor(prevClearColor, prevClearAlpha);
+}
+
+function resizeComposerBuffers(
+    composer: EffectComposer,
+    width: number,
+    height: number
+) {
+    if (
+        composer.inputBuffer.width === width &&
+        composer.inputBuffer.height === height
+    ) {
+        return;
+    }
+
+    composer.inputBuffer.setSize(width, height);
+    composer.outputBuffer.setSize(width, height);
+    composer.passes.forEach((pass) => pass.setSize(width, height));
 }
