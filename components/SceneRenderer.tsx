@@ -1,4 +1,6 @@
+import { Model as CinemaModel } from "@/app/demo/CinemaModel";
 import { ForestModel } from "@/app/demo/ForestModel";
+import { Model as InterrogationModel } from "@/app/demo/InterrogationModel";
 import { MetroModel } from "@/app/demo/MetroModel";
 import { TripScene } from "@/lib/types";
 import { Group, Mesh } from "three";
@@ -26,6 +28,12 @@ export default function SceneRenderer() {
             )}
             {selectedScene === TripScene.Forest && (
                 <ForestModel ref={modelRefCallback} />
+            )}
+            {selectedScene === TripScene.Cinema && (
+                <CinemaModel ref={modelRefCallback} />
+            )}
+            {selectedScene === TripScene.Interrogation && (
+                <InterrogationModel ref={modelRefCallback} />
             )}
         </>
     );

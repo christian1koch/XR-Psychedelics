@@ -19,6 +19,8 @@ export interface SelectionProps<T> {
 export enum TripScene {
     Metro = "Metro",
     Forest = "Forest",
+    Cinema = "Cinema",
+    Interrogation = "Interrogation",
 }
 
 export type SceneInitialPositions = {

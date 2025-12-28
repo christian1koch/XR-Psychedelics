@@ -11,6 +11,8 @@ const store = createXRStore();
 const InitialPositions: SceneInitialPositions = {
     Metro: [8, 2.5, 5],
     Forest: [8, 2.5, 5],
+    Cinema: [8, 2.5, 5],
+    Interrogation: [8, 2.5, 5],
 };
 
 export default function App() {
@@ -25,7 +27,10 @@ export default function App() {
                     Enter VR
                 </button>
             </div>
-            <Canvas>
+            <Canvas
+                style={{ height: "100vh" }}
+                camera={{ position: [0, 0, 0] }}
+            >
                 <XR store={store}>
                     <XROrigin>
                         <SceneContent />

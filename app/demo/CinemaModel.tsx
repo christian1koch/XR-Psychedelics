@@ -1,0 +1,620 @@
+"use client";
+import React from "react";
+import { useGLTF } from "@react-three/drei";
+import { ThreeElements } from "@react-three/fiber";
+import { Group } from "three";
+
+type CinemaModelProps = ThreeElements["group"] & {
+    ref?: React.Ref<Group>;
+};
+
+export function Model({ ref, ...props }: CinemaModelProps) {
+    const { nodes, materials } = useGLTF("/cinema_hall.glb") as any;
+    return (
+        <group {...props} dispose={null} ref={ref}>
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.wooden_wall_1.geometry}
+                material={materials.wood}
+                position={[-46.753, 0, -12.7]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.decor_1.geometry}
+                material={materials.dec_plastic}
+                position={[-6.5, 0, -13.2]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.decor_2.geometry}
+                material={materials.dec_plastic}
+                position={[0.9, 0, -13.2]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.decor_3.geometry}
+                material={materials.dec_plastic}
+                position={[-6.5, 0, 13.2]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.decor_4.geometry}
+                material={materials.dec_plastic}
+                position={[0.9, 0, 13.2]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.curtain.geometry}
+                material={nodes.curtain.material}
+                position={[5.212, 11.487, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.wooden_wall_2.geometry}
+                material={materials.wood}
+                position={[-46.753, 0, 12.7]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_1_1.geometry}
+                material={materials.armchair}
+                position={[-8.929, 0.5, 12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_1_2.geometry}
+                material={materials.armchair}
+                position={[-8.929, 0.5, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_1_3.geometry}
+                material={materials.armchair}
+                position={[-8.929, 0.5, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_2_2.geometry}
+                material={materials.armchair}
+                position={[-11.388, 1, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_2_3.geometry}
+                material={materials.armchair}
+                position={[-11.388, 1, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_2_1.geometry}
+                material={materials.armchair}
+                position={[-11.388, 1, 12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_3_2.geometry}
+                material={materials.armchair}
+                position={[-13.847, 1.5, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_3_3.geometry}
+                material={materials.armchair}
+                position={[-13.847, 1.5, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_3_1.geometry}
+                material={materials.armchair}
+                position={[-13.847, 1.5, 12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_4_2.geometry}
+                material={materials.armchair}
+                position={[-16.306, 2, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_4_3.geometry}
+                material={materials.armchair}
+                position={[-16.306, 2, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_4_1.geometry}
+                material={materials.armchair}
+                position={[-16.306, 2, 12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_5_2.geometry}
+                material={materials.armchair}
+                position={[-18.765, 2.5, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_5_3.geometry}
+                material={materials.armchair}
+                position={[-18.765, 2.5, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_5_1.geometry}
+                material={materials.armchair}
+                position={[-18.765, 2.5, 12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_6_2.geometry}
+                material={materials.armchair}
+                position={[-21.224, 3, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_6_3.geometry}
+                material={materials.armchair}
+                position={[-21.224, 3, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_6_1.geometry}
+                material={materials.armchair}
+                position={[-21.224, 3, 12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_7_2.geometry}
+                material={materials.armchair}
+                position={[-23.683, 3.5, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_7_3.geometry}
+                material={materials.armchair}
+                position={[-23.683, 3.5, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_7_1.geometry}
+                material={materials.armchair}
+                position={[-23.683, 3.5, 12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_8.geometry}
+                material={materials.armchair}
+                position={[-27.707, 4, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_9.geometry}
+                material={materials.armchair}
+                position={[-30.166, 4, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_10.geometry}
+                material={materials.armchair}
+                position={[-32.625, 4.5, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_11.geometry}
+                material={materials.armchair}
+                position={[-35.083, 5, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_12_2.geometry}
+                material={materials.armchair}
+                position={[-37.542, 5.5, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_12_1.geometry}
+                material={materials.armchair}
+                position={[-37.542, 5.5, 11.993]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_12_3.geometry}
+                material={materials.armchair}
+                position={[-37.542, 5.5, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_13_2.geometry}
+                material={materials.armchair}
+                position={[-40.001, 6, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_13_1.geometry}
+                material={materials.armchair}
+                position={[-40.001, 6, 11.993]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_13_3.geometry}
+                material={materials.armchair}
+                position={[-40.001, 6, -12]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_14_2.geometry}
+                material={materials.armchair}
+                position={[-42.46, 6.5, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_14_1.geometry}
+                material={materials.armchair}
+                position={[-42.46, 6.5, 11.993]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.row_14_3.geometry}
+                material={materials.armchair}
+                position={[-42.46, 6.5, -12]}
+            />
+            <group position={[-24.158, 8, -13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_3_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_3_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-45.558, 10.5, -13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_1_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_1_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-37.876, 3.5, 12.7]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_12_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_12_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-2.8, 5, -13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_5_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_5_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-13.458, 5.5, 13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_7_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_7_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-13.458, 5.5, -13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_4_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_4_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-34.858, 10.5, -13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_2_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_2_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-2.8, 5, 13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_6_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_6_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-34.858, 10.5, 13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_9_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_9_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-45.558, 10.5, 13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_10_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_10_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-24.158, 8, 13.2]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_8_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_8_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-33.558, 3.5, 12.7]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_11_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_11_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-37.876, 3.5, -12.7]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_14_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_14_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-33.558, 3.5, -12.7]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_15_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_15_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-40.356, 3.5, 0]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_13_1.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_13_2.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <group position={[-47.753, 10.5, 0]}>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_16001.geometry}
+                    material={materials.lamp}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.lamp_16001_1.geometry}
+                    material={materials.light}
+                />
+            </group>
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.door_1.geometry}
+                material={materials.wood_door}
+                position={[-4.2, 1.02, -13.2]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.door_2.geometry}
+                material={materials.wood_door}
+                position={[-2.8, 1.02, -13.2]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.door_4.geometry}
+                material={materials.wood_door}
+                position={[-4.2, 1.02, 13.2]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.door_3.geometry}
+                material={materials.wood_door}
+                position={[-1.4, 1.02, 13.2]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.door_5.geometry}
+                material={materials.wood_door}
+                position={[-47.753, 8.02, 7.65]}
+                rotation={[0, Math.PI / 2, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.door_6.geometry}
+                material={materials.wood_door}
+                position={[-47.753, 8.02, 4.85]}
+                rotation={[0, Math.PI / 2, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.door_7.geometry}
+                material={materials.wood_door}
+                position={[-47.753, 8.02, -4.85]}
+                rotation={[0, Math.PI / 2, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.door_8.geometry}
+                material={materials.wood_door}
+                position={[-47.753, 8.02, -7.65]}
+                rotation={[0, Math.PI / 2, 0]}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.cinema_hall_1.geometry}
+                material={materials.wood}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.cinema_hall_2.geometry}
+                material={materials.tile}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.cinema_hall_3.geometry}
+                material={materials.floor}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.cinema_hall_4.geometry}
+                material={materials.screen}
+            />
+            <mesh
+                castShadow
+                receiveShadow
+                geometry={nodes.cinema_hall_5.geometry}
+                material={materials.ceiling}
+            />
+        </group>
+    );
+}
+
+useGLTF.preload("/cinema_hall.glb");
