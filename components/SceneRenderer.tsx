@@ -20,7 +20,9 @@ export default function SceneRenderer() {
     return (
         <>
             {selectedScene === TripScene.Metro && (
-                <MetroModel ref={modelRefCallback} />
+                <group position={[-8, -2.5, -5]}>
+                    <MetroModel ref={modelRefCallback} />
+                </group>
             )}
             {selectedScene === TripScene.Forest && (
                 <ForestModel ref={modelRefCallback} />
