@@ -17,6 +17,7 @@ export interface SelectionProps<T> {
 }
 
 export enum TripScene {
+    Empty = "Empty",
     Metro = "Metro",
     Forest = "Forest",
     Cinema = "Cinema",

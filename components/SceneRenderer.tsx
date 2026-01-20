@@ -21,6 +21,15 @@ export default function SceneRenderer() {
     };
     return (
         <>
+            {selectedScene === TripScene.Empty &&
+                // Empty scene for AR passthrough testing - renders nothing
+                null}
+            {selectedScene === TripScene.Empty && (
+                <mesh>
+                    <boxGeometry args={[1, 1, 1]} />
+                    <meshStandardMaterial color="hotpink" />
+                </mesh>
+            )}
             {selectedScene === TripScene.Metro && (
                 <group position={[-8, -2.5, -5]}>
                     <MetroModel ref={modelRefCallback} />

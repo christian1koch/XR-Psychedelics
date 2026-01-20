@@ -3,9 +3,14 @@
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useXR } from "@react-three/xr";
-import { Color } from "three";
+import { Color, HalfFloatType } from "three";
 import type { Camera, Scene, Vector4, WebGLRenderer } from "three";
-import { CopyPass, EffectComposer, EffectPass, RenderPass } from "postprocessing";
+import {
+    CopyPass,
+    EffectComposer,
+    EffectPass,
+    RenderPass,
+} from "postprocessing";
 import type { Effect } from "postprocessing";
 import { EffectSet } from "@/lib/types";
 import { useTripExperience } from "./TripExperienceContext";
@@ -46,19 +51,22 @@ export default function XRStereoPostprocessing() {
         effectSetsRef.current.left = leftSet ?? undefined;
         effectSetsRef.current.right = rightSet ?? undefined;
 
+        const isAR = mode === "immersive-ar";
         composersRef.current.left = setupComposer(
             composersRef.current.left?.composer,
             gl,
             scene,
             camera,
-            leftSet.effects
+            leftSet.effects,
+            isAR
         );
         composersRef.current.right = setupComposer(
             composersRef.current.right?.composer,
             gl,
             scene,
             camera,
-            rightSet.effects
+            rightSet.effects,
+            isAR
         );
 
         const cleanupLeft = leftSet;
@@ -68,7 +76,7 @@ export default function XRStereoPostprocessing() {
             cleanupLeft?.dispose();
             cleanupRight?.dispose();
         };
-    }, [camera, gl, scene, selectedTrip, strength]);
+    }, [camera, gl, mode, scene, selectedTrip, strength]);
 
     useFrame((state, delta) => {
         // Only run this pipeline inside an XR session.
@@ -87,7 +95,9 @@ export default function XRStereoPostprocessing() {
 
         // Pull the real XR eye cameras from the renderer.
         const xrManager = state.gl.xr as unknown as {
-            getCamera: () => { cameras: Array<Camera & { viewport?: Vector4 }> };
+            getCamera: () => {
+                cameras: Array<Camera & { viewport?: Vector4 }>;
+            };
             updateCamera: (camera: Camera) => void;
         };
         xrManager.updateCamera(state.camera);
@@ -114,7 +124,8 @@ export default function XRStereoPostprocessing() {
 
         // Save the main camera state so we can restore it later.
         const prevProjection = state.camera.projectionMatrix.clone();
-        const prevProjectionInverse = state.camera.projectionMatrixInverse.clone();
+        const prevProjectionInverse =
+            state.camera.projectionMatrixInverse.clone();
         const prevMatrixWorld = state.camera.matrixWorld.clone();
         const prevMatrixWorldInverse = state.camera.matrixWorldInverse.clone();
         const prevPosition = state.camera.position.clone();
@@ -125,21 +136,37 @@ export default function XRStereoPostprocessing() {
         state.camera.matrixWorld.copy(leftEye.matrixWorld);
         state.camera.matrixWorldInverse.copy(leftEye.matrixWorldInverse);
         state.camera.projectionMatrix.copy(leftEye.projectionMatrix);
-        state.camera.projectionMatrixInverse.copy(leftEye.projectionMatrixInverse);
+        state.camera.projectionMatrixInverse.copy(
+            leftEye.projectionMatrixInverse
+        );
         state.camera.position.copy(leftEye.position);
         state.camera.quaternion.copy(leftEye.quaternion);
         state.camera.scale.copy(leftEye.scale);
-        renderEye(gl, leftComposer, leftEye, delta);
+        renderEye(
+            gl,
+            leftComposer,
+            leftEye,
+            delta,
+            isPresenting && mode === "immersive-ar"
+        );
 
         // Render right eye.
         state.camera.matrixWorld.copy(rightEye.matrixWorld);
         state.camera.matrixWorldInverse.copy(rightEye.matrixWorldInverse);
         state.camera.projectionMatrix.copy(rightEye.projectionMatrix);
-        state.camera.projectionMatrixInverse.copy(rightEye.projectionMatrixInverse);
+        state.camera.projectionMatrixInverse.copy(
+            rightEye.projectionMatrixInverse
+        );
         state.camera.position.copy(rightEye.position);
         state.camera.quaternion.copy(rightEye.quaternion);
         state.camera.scale.copy(rightEye.scale);
-        renderEye(gl, rightComposer, rightEye, delta);
+        renderEye(
+            gl,
+            rightComposer,
+            rightEye,
+            delta,
+            isPresenting && mode === "immersive-ar"
+        );
 
         // Restore the main camera so the rest of the frame is consistent.
         state.camera.matrixWorld.copy(prevMatrixWorld);
@@ -162,15 +189,27 @@ function setupComposer(
     gl: WebGLRenderer,
     scene: Scene,
     camera: Camera,
-    effects: Effect[]
+    effects: Effect[],
+    isAR: boolean = false
 ): StereoComposer {
     // Build the pass chain for a single eye.
-    const composer = existing ?? new EffectComposer(gl);
+    // For AR, we need alpha-enabled buffers, so always create a fresh composer
+    // with the correct settings rather than reusing one with wrong format.
+    existing?.dispose();
+    const composer = new EffectComposer(gl, {
+        frameBufferType: isAR ? HalfFloatType : undefined,
+        alpha: isAR,
+    });
     composer.removeAllPasses();
 
     const renderPass = new RenderPass(scene, camera);
     renderPass.clearPass.overrideClearColor = new Color(0x000000);
-    renderPass.clearPass.overrideClearAlpha = 1;
+    // Use transparent background for AR to allow camera passthrough
+    renderPass.clearPass.overrideClearAlpha = isAR ? 0 : 1;
+    // For AR, we need to clear with alpha
+    if (isAR) {
+        renderPass.clear = true;
+    }
     composer.addPass(renderPass);
 
     let effectPass: EffectPass | undefined;
@@ -191,7 +230,8 @@ function renderEye(
     gl: WebGLRenderer,
     stereo: StereoComposer,
     eyeCamera: Camera & { viewport?: Vector4 },
-    delta: number
+    delta: number,
+    isAR: boolean = false
 ) {
     // Each XR eye provides a viewport inside the shared framebuffer.
     const viewport = eyeCamera.viewport;
@@ -208,7 +248,8 @@ function renderEye(
     gl.getClearColor(prevClearColor);
     const prevClearAlpha = gl.getClearAlpha();
 
-    gl.setClearColor(0x000000, 1);
+    // Use transparent background for AR to allow camera passthrough
+    gl.setClearColor(0x000000, isAR ? 0 : 1);
     gl.setViewport(viewport.x, viewport.y, width, height);
     gl.setScissor(viewport.x, viewport.y, width, height);
     gl.clear();

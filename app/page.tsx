@@ -19,12 +19,18 @@ export default function App() {
     return (
         <TripExperienceProvider>
             <Controllers2D />
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute top-4 right-4 z-10 flex gap-2">
                 <button
                     className="rounded bg-white p-2 text-black"
                     onClick={() => store.enterVR()}
                 >
                     Enter VR
+                </button>
+                <button
+                    className="rounded bg-white p-2 text-black"
+                    onClick={() => store.enterAR()}
+                >
+                    Enter AR
                 </button>
             </div>
             <Canvas
