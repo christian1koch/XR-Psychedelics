@@ -1,12 +1,17 @@
 import { Model as CinemaModel } from "@/app/demo/CinemaModel";
 import { ForestModel } from "@/app/demo/ForestModel";
 import { Model as InterrogationModel } from "@/app/demo/InterrogationModel";
+import { Model as InterrogationARModel } from "@/app/demo/InterrogationARModel";
 import { MetroModel } from "@/app/demo/MetroModel";
 import { TripScene } from "@/lib/types";
 import { Group, Mesh } from "three";
+
 import { useTripExperience } from "./TripExperienceContext";
+import { useXR } from "@react-three/xr";
 
 export default function SceneRenderer() {
+    const { mode } = useXR();
+    const isAR = mode === "immersive-ar";
     const { selectedScene, collidersRef } = useTripExperience();
     const modelRefCallback = (group: Group | null) => {
         if (group) {
@@ -41,9 +46,12 @@ export default function SceneRenderer() {
             {selectedScene === TripScene.Cinema && (
                 <CinemaModel ref={modelRefCallback} />
             )}
-            {selectedScene === TripScene.Interrogation && (
-                <InterrogationModel ref={modelRefCallback} />
-            )}
+            {selectedScene === TripScene.Interrogation &&
+                (isAR ? (
+                    <InterrogationARModel ref={modelRefCallback} />
+                ) : (
+                    <InterrogationModel ref={modelRefCallback} />
+                ))}
         </>
     );
 }
