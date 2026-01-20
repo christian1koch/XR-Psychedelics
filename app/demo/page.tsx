@@ -1,13 +1,13 @@
 "use client";
 import { Canvas } from "@react-three/fiber";
 import { FirstPersonCamera } from "@/components/FirstPersonCamera";
-import { TripScene, SceneInitialPositions } from "@/lib/types";
 import {
     TripExperienceProvider,
     useTripExperience,
 } from "@/components/TripExperienceContext";
 import Controllers2D from "@/components/Controllers2D";
 import SceneContent from "@/components/SceneContent";
+import { InitialPositions } from "@/lib/constants";
 
 function DemoContent() {
     const { selectedScene } = useTripExperience();
@@ -21,7 +21,7 @@ function DemoContent() {
             >
                 <FirstPersonCamera
                     key={selectedScene}
-                    initialCameraPos={InitialPositions[TripScene.Metro]}
+                    initialCameraPos={InitialPositions[selectedScene]}
                 />
                 <SceneContent />
             </Canvas>
