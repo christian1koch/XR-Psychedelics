@@ -25,10 +25,6 @@ export default function Controllers2D() {
                         step={0.05}
                     />
                 </div>
-
-                <div className="bg-background mt-2 w-full justify-center rounded-md p-1 text-center">
-                    Click anywhere and move around
-                </div>
             </div>
         </div>
     );
