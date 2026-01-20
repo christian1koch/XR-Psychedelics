@@ -11,7 +11,7 @@ type InterrogationModelProps = ThreeElements["group"] & {
 export function Model({ ref, ...props }: InterrogationModelProps) {
     const { nodes, materials } = useGLTF("/interrogation.glb") as any;
     return (
-        <group {...props} dispose={null} ref={ref} position={[-1, 0, -1]}>
+        <group {...props} dispose={null} ref={ref}>
             <group>
                 <mesh
                     castShadow

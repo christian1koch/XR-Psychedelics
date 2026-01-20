@@ -8,13 +8,6 @@ import Controllers2D from "@/components/Controllers2D";
 
 const store = createXRStore();
 
-const InitialPositions: SceneInitialPositions = {
-    Metro: [8, 2.5, 5],
-    Forest: [8, 2.5, 5],
-    Cinema: [8, 2.5, 5],
-    Interrogation: [8, 2.5, 5],
-};
-
 export default function App() {
     return (
         <TripExperienceProvider>

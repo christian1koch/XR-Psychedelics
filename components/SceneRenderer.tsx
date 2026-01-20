@@ -1,8 +1,12 @@
 import { Model as CinemaModel } from "@/app/demo/CinemaModel";
+import { CinemaARModel } from "@/app/demo/CinemaARModel";
 import { ForestModel } from "@/app/demo/ForestModel";
+import { ForestARModel } from "@/app/demo/ForestARModel";
 import { Model as InterrogationModel } from "@/app/demo/InterrogationModel";
 import { Model as InterrogationARModel } from "@/app/demo/InterrogationARModel";
 import { MetroModel } from "@/app/demo/MetroModel";
+import { MetroARModel } from "@/app/demo/MetroARModel";
+import { InitialPositions } from "@/lib/constants";
 import { TripScene } from "@/lib/types";
 import { Group, Mesh } from "three";
 
@@ -30,27 +34,52 @@ export default function SceneRenderer() {
                 // Empty scene for AR passthrough testing - renders nothing
                 null}
             {selectedScene === TripScene.Empty && (
-                <mesh>
-                    <boxGeometry args={[1, 1, 1]} />
-                    <meshStandardMaterial color="hotpink" />
-                </mesh>
-            )}
-            {selectedScene === TripScene.Metro && (
-                <group position={[-8, -2.5, -5]}>
-                    <MetroModel ref={modelRefCallback} />
+                <group position={InitialPositions.Empty}>
+                    <mesh>
+                        <boxGeometry args={[1, 1, 1]} />
+                        <meshStandardMaterial color="hotpink" />
+                    </mesh>
                 </group>
             )}
-            {selectedScene === TripScene.Forest && (
-                <ForestModel ref={modelRefCallback} />
-            )}
-            {selectedScene === TripScene.Cinema && (
-                <CinemaModel ref={modelRefCallback} />
-            )}
+            {selectedScene === TripScene.Metro &&
+                (isAR ? (
+                    <group position={InitialPositions.Metro}>
+                        <MetroARModel ref={modelRefCallback} />
+                    </group>
+                ) : (
+                    <group position={InitialPositions.Metro}>
+                        <MetroModel ref={modelRefCallback} />
+                    </group>
+                ))}
+            {selectedScene === TripScene.Forest &&
+                (isAR ? (
+                    <group position={InitialPositions.Forest}>
+                        <ForestARModel ref={modelRefCallback} />
+                    </group>
+                ) : (
+                    <group position={InitialPositions.Forest}>
+                        <ForestModel ref={modelRefCallback} />
+                    </group>
+                ))}
+            {selectedScene === TripScene.Cinema &&
+                (isAR ? (
+                    <group position={InitialPositions.Cinema}>
+                        <CinemaARModel ref={modelRefCallback} />
+                    </group>
+                ) : (
+                    <group position={InitialPositions.Cinema}>
+                        <CinemaModel ref={modelRefCallback} />
+                    </group>
+                ))}
             {selectedScene === TripScene.Interrogation &&
                 (isAR ? (
-                    <InterrogationARModel ref={modelRefCallback} />
+                    <group position={InitialPositions.Interrogation}>
+                        <InterrogationARModel ref={modelRefCallback} />
+                    </group>
                 ) : (
-                    <InterrogationModel ref={modelRefCallback} />
+                    <group position={InitialPositions.Interrogation}>
+                        <InterrogationModel ref={modelRefCallback} />
+                    </group>
                 ))}
         </>
     );

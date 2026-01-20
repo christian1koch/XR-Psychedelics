@@ -9,13 +9,6 @@ import {
 import Controllers2D from "@/components/Controllers2D";
 import SceneContent from "@/components/SceneContent";
 
-const InitialPositions: SceneInitialPositions = {
-    Metro: [8, 3, 5],
-    Forest: [8, 3, 5],
-    Cinema: [8, 3, 5],
-    Interrogation: [8, 3, 5],
-};
-
 function DemoContent() {
     const { selectedScene } = useTripExperience();
 
