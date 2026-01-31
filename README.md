@@ -1,2 +1,11 @@
-## Useful Shader List
-https://hofk.de/main/discourse.threejs/2025/Xindex2025.html
+## Wie man das Projekt lokal zum Laufen bring
+
+`npm install`
+`npm run dev`
+
+## Wie kann man es lokal mit der Meta Quest verbinden
+`npm run meta-quest-link`
+
+## Deploy Link
+
+[xr-psychedelics.vercel.app](https://xr-psychedelics.vercel.app)
